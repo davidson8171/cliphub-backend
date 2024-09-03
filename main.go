@@ -22,11 +22,13 @@ func main() {
 
 	router := chi.NewRouter()
 	router.Use(middleware.RequestID)
-	router.Use(middleware.Heartbeat("/ping"))
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
+	router.Use(middleware.Heartbeat("/api/ping"))
 
-	router.Post("/contact", controllers.HandleContact)
+	router.Route("/api", func(r chi.Router) {
+		r.Post("/contact", controllers.HandleContact)
+	})
 
 	port := os.Getenv("PORT")
 	log.Println("Listening on port" + port)
